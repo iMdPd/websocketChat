@@ -14,11 +14,41 @@ loginForm.addEventListener("submit", (e) => {
 const login = (e) => {
   e.preventDefault();
 
-  if (!userNameInput.value) alert("Hello! I am an alert box!!");
-  else {
+  if (!userNameInput.value) {
+    return alert("Please fill login input with your's name!");
+  } else {
     userName = userNameInput.value;
 
     loginForm.classList.remove("show");
     messagesSection.classList.add("show");
   }
+};
+
+addMessageForm.addEventListener("submit", (e) => {
+  sendMessage(e);
+});
+
+const sendMessage = (e) => {
+  e.preventDefault();
+
+  if (!messageContentInput.value) {
+    return alert("To send message you must fill input with content!");
+  } else {
+    addMessage(userName, messageContentInput.value);
+    messageContentInput.value = "";
+  }
+};
+
+const addMessage = (author, content) => {
+  const message = document.createElement("li");
+  message.classList.add("message", "message--recived");
+
+  if (author === userName) message.classList.add("message--self");
+
+  message.innerHTML = `
+<h3 class="message__author">${author === userName ? "You" : author}</h3>
+<div class="message__content">${content}</div>
+`;
+
+  messagesList.appendChild(message);
 };
