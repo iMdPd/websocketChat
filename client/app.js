@@ -39,6 +39,7 @@ const sendMessage = (e) => {
     return alert("To send message you must fill input with content!");
   } else {
     addMessage(userName, messageContentInput.value);
+    socket.emit("message", { author: userName, content: messageContent });
     messageContentInput.value = "";
   }
 };
