@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const socket = require("socket.io");
-const { messages } = require("./db/db");
+const { messages, users } = require("./db/db");
 
 const app = express();
 PORT = 8000;
@@ -22,8 +22,38 @@ app.get("*", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("New client! Its id – " + socket.id);
-  socket.on("message", () => {
-    console.log("Oh, I've got something from " + socket.id);
+
+  socket.on("join", (newUser) => {
+    console.log(`${newUser} has joined the conversation!`);
+
+    users.push({ name: newUser, id: socket.id });
+
+    socket.broadcast.emit("message", {
+      author: "Chat Bot",
+      content: `${newUser} has joined the conversation!`,
+    });
   });
+
+  socket.on("message", (message) => {
+    console.log(`Oh, I've got something from ${socket.id}`);
+
+    messages.push(message);
+    
+    socket.broadcast.emit("message", message);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`Oh, socket ${socket.id} has left`);
+
+    const removeUser = users.find((user) => user.id === socket.id);
+
+    socket.broadcast.emit("message", {
+      author: "Chat Bot",
+      content: `${removeUser.name} has left the conversation... :(`,
+    });
+
+    users.splice(users.indexOf(removeUser), 1);
+  });
+
   console.log("I've added a listener on message event \n");
 });
