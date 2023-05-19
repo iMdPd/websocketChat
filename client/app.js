@@ -1,3 +1,7 @@
+const socket = io();
+
+socket.on("message", ({ author, content }) => addMessage(author, content));
+
 const loginForm = document.getElementById("welcome-form"),
   messagesSection = document.getElementById("messages-section"),
   messagesList = document.getElementById("messages-list"),
