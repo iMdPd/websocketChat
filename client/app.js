@@ -23,6 +23,8 @@ const login = (e) => {
   } else {
     userName = userNameInput.value;
 
+    socket.emit("join", userName);
+
     loginForm.classList.remove("show");
     messagesSection.classList.add("show");
   }
@@ -39,7 +41,12 @@ const sendMessage = (e) => {
     return alert("To send message you must fill input with content!");
   } else {
     addMessage(userName, messageContentInput.value);
-    socket.emit("message", { author: userName, content: messageContent });
+
+    socket.emit("message", {
+      author: userName,
+      content: messageContentInput.value,
+    });
+
     messageContentInput.value = "";
   }
 };
