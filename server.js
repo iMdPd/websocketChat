@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
     console.log(`Oh, I've got something from ${socket.id}`);
 
     messages.push(message);
-    
+
     socket.broadcast.emit("message", message);
   });
 
@@ -47,10 +47,11 @@ io.on("connection", (socket) => {
 
     const removeUser = users.find((user) => user.id === socket.id);
 
-    socket.broadcast.emit("message", {
-      author: "Chat Bot",
-      content: `${removeUser.name} has left the conversation... :(`,
-    });
+    if (removeUser)
+      socket.broadcast.emit("message", {
+        author: "Chat Bot",
+        content: `${removeUser.name} has left the conversation... :(`,
+      });
 
     users.splice(users.indexOf(removeUser), 1);
   });
